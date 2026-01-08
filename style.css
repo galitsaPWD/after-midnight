@@ -60,6 +60,101 @@ body {
     font-family: 'Outfit', sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    cursor: none;
+}
+
+/* Custom Cinematic Cursor */
+.cursor-starlight {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background 0.3s, border 0.3s;
+    mix-blend-mode: screen;
+    animation: starlight-breathing 4s ease-in-out infinite;
+}
+
+.cursor-dot {
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #fff;
+    transition: width 0.3s, height 0.3s;
+    animation: dot-flicker 2s linear infinite;
+}
+
+/* Light Animations */
+@keyframes starlight-breathing {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+}
+
+@keyframes dot-flicker {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 10px #fff;
+    }
+
+    33% {
+        opacity: 0.8;
+        box-shadow: 0 0 8px #fff;
+    }
+
+    66% {
+        opacity: 0.9;
+        box-shadow: 0 0 12px #fff;
+    }
+}
+
+.illuminate {
+    background: radial-gradient(circle var(--radius, 220px) at var(--x, 0px) var(--y, 0px),
+            #ffffff 0%,
+            var(--dim) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: --radius 0.3s ease;
+}
+
+/* Hover States for Cursor */
+.cursor-starlight.hovering {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 70%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation-duration: 1s;
+    /* Faster pulse when hovering */
+}
+
+.cursor-dot.hovering {
+    width: 6px;
+    height: 6px;
+    box-shadow: 0 0 20px #fff;
+}
+
+* {
+    cursor: none !important;
 }
 
 /* Custom Minimal Scrollbar */
@@ -347,48 +442,98 @@ section.active {
     -webkit-text-fill-color: transparent;
 }
 
-/* Experience Cards */
+/* Cinematic Grain/Noise Overlay */
+.noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://grain-y-gradients.vercel.app/noise.svg');
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 9998;
+    /* Just below cursor */
+    filter: contrast(120%) brightness(100%);
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Experience Cards Refinement */
 .exp-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 2rem;
     max-width: 1200px;
+    margin-top: 4rem;
 }
 
 .exp-card {
-    padding: 4rem 2.5rem;
-    background: rgba(255, 255, 255, 0.01);
+    padding: 5rem 3rem;
+    background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.exp-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+            rgba(255, 255, 255, 0.05) 0%,
+            transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 .exp-card:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-15px);
+    transform: translateY(-20px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.exp-card:hover::before {
+    opacity: 1;
 }
 
 .card-num {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4rem;
     color: var(--dim);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.4;
 }
 
 .exp-card h3 {
-    font-size: 1.2rem;
-    font-weight: 400;
+    font-size: 1.1rem;
+    font-weight: 300;
     text-transform: uppercase;
-    letter-spacing: 0.2rem;
-    margin-bottom: 1.5rem;
+    letter-spacing: 0.3rem;
+    margin-bottom: 2rem;
+    color: #ffffff;
 }
 
 .exp-card p {
-    font-size: 0.95rem;
-    /* Increased */
+    font-size: 0.9rem;
     font-weight: 300;
     color: var(--dim);
-    line-height: 1.6;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
 }
 
 /* CTA Section */
